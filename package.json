@@ -5,7 +5,8 @@
   "main": "app/index.html",
   "scripts": {
     "start": "python3 -m http.server 8080 --directory app",
-    "build:ipa": "bash scripts/build_ipa.sh"
+    "build:ipa": "bash scripts/build_ipa.sh",
+    "deploy": "npx wrangler pages deploy app --project-name=jump-jump"
   },
   "keywords": [
     "jump-jump",

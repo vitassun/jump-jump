@@ -113,10 +113,76 @@ bash scripts/build_ipa.sh
 
 ---
 
+## 🌐 网页版与 Cloudflare 部署教程
+
+本项目前端代码位于 `app/` 目录下，属于**纯静态前端（Pure Static Web App）**，天生适配 Cloudflare Pages 边缘网络。
+
+### 方法一：通过 Cloudflare Pages 控制台直接连接 GitHub（推荐，全自动免维护）
+
+1. 登录 [Cloudflare 控制台](https://dash.cloudflare.com/)。
+2. 左侧导航进入 **Workers 和 Pages (Workers & Pages)** ➔ 点击 **创建应用程序 (Create application)** ➔ 切换到 **Pages** 选项卡。
+3. 选择 **连接到 Git (Connect to Git)**，授权你的 GitHub 账号并选中仓库 `vitassun/jump-jump`。
+4. 填写构建配置：
+   - **项目名称 (Project name)**：`jump-jump`（可自定义）
+   - **生产分支 (Production branch)**：`main`
+   - **框架预设 (Framework preset)**：选择 `None`
+   - **构建命令 (Build command)**：留空（无需任何编译命令）
+   - **构建输出目录 (Build output directory)**：填写 `app`
+5. 点击 **保存并部署 (Save and Deploy)**。
+6. 约 10 秒后部署完成，Cloudflare 会为你分配一个免费的全局 CDN 域名：`https://jump-jump.pages.dev`。
+
+---
+
+### 方法二：使用 Wrangler 命令行一键部署
+
+在项目根目录下执行：
+```bash
+# 1. 登录 Cloudflare（首次运行会自动打开浏览器授权）
+npx wrangler login
+
+# 2. 直接部署 app 目录到 Cloudflare Pages
+npm run deploy
+# 或者运行：npx wrangler pages deploy app --project-name=jump-jump
+```
+
+---
+
+## 🧭 如何添加 DNS 记录（绑定个人域名）
+
+部署完成后，将游戏绑定到你的个人域名（例如 `jump.yourdomain.com` 或根域名 `yourdomain.com`）：
+
+### 步骤 1：在 Cloudflare Pages 项目中添加自定义域
+1. 打开 Cloudflare 控制台，进入你的 Pages 项目（例如 `jump-jump`）。
+2. 点击顶部的 **自定义域 (Custom domains)** 选项卡。
+3. 点击 **设置自定义域 (Set up a custom domain)** 按钮。
+4. 输入你想使用的域名，例如 `jump.yourdomain.com`，点击 **继续 (Continue)**。
+
+---
+
+### 步骤 2：添加 DNS 解析记录
+
+#### 情况 A：你的域名已经在 Cloudflare 上托管（最简单）
+- Cloudflare 会自动检测到域名在你的账户内，并在页面上直接显示 **“激活域 (Activate domain)”** 按钮。
+- 点击确认后，Cloudflare 会**自动**在你的 DNS 列表中生成一条 `CNAME` 记录，**无需手动填写任何参数**！
+- 等待 1~2 分钟，SSL 证书自动签发完成即可访问。
+
+#### 情况 B：你的域名在第三方平台（如腾讯云 DNSPod、阿里云万网、GoDaddy、Namecheap 等）
+如果你的域名 DNS 解析不在 Cloudflare，请登录你的域名注册商/解析商后台，添加一条 `CNAME` 记录：
+
+| 记录类型 (Type) | 主机记录 / 名称 (Name) | 记录值 / 目标 (Value/Target) | TTL |
+| :--- | :--- | :--- | :--- |
+| **CNAME** | `jump`（代表 `jump.yourdomain.com`）<br>或 `@`（代表根域名） | `jump-jump.pages.dev`<br>*(替换为你实际的 Pages 免费域名)* | 自动 (Auto) 或 600 |
+
+> **提示**：如果使用根域名 `@`，请确保你的解析服务商支持 **CNAME Flattening (CNAME 扁平化/别名解析/URL 转发)**；若不支持，推荐使用二级子域名（如 `jump.yourdomain.com` 或 `game.yourdomain.com`）。
+
+---
+
 ## 🎮 操作说明
 
-- **按住屏幕 / 鼠标左键**：小人下蹲蓄力，蓄力时间越长跳跃距离越远，伴随升调提示音与震动。
-- **松开屏幕 / 鼠标**：小人腾空而起，翻滚跃向下一个跳板。
+- **移动端（iPhone / Android）**：按住屏幕蓄力，松开起跳。
+- **电脑端（PC / Mac）**：
+  - **空格键 (Space)** 或 **鼠标左键**：长按蓄力，松开起跳。
+  - **R 键 / Enter 键**：游戏结束后快速重新开始。
 - **正中靶心**：获得双倍及连续翻倍加分（+2, +4, +6...）并触发音效与光环。
 - **掉落跳板**：游戏结束，点击“再玩一局”即可立即重新开始。
 

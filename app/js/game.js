@@ -114,6 +114,12 @@ class JumpGame {
         this.blockManager.reset();
         this.player.reset();
 
+        // Detect touch vs desktop for instructions
+        const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+        if (this.instructionEl) {
+            this.instructionEl.textContent = isTouch ? '长按屏幕蓄力，松开起跳' : '按住空格键或鼠标左键蓄力，松开起跳';
+        }
+
         // 1. Initial base block at (0, 0)
         this.currentBlock = this.blockManager.createBlock(0, 0, 0);
         this.currentBlock.isSpawning = false;
@@ -195,6 +201,52 @@ class JumpGame {
         window.addEventListener('pointerdown', onPointerDown, { passive: false });
         window.addEventListener('pointerup', onPointerUp, { passive: false });
         window.addEventListener('pointercancel', onPointerUp, { passive: false });
+
+        // Keyboard Controls for Desktop (Space to jump, R to restart)
+        window.addEventListener('keydown', (e) => {
+            if (e.code === 'Space' && !e.repeat) {
+                e.preventDefault();
+                if (!this.gameOverModal.classList.contains('hidden')) {
+                    this.initGame();
+                    return;
+                }
+                if (this.player.state === 'IDLE') {
+                    if (!this.hasStarted) {
+                        this.hasStarted = true;
+                        if (this.instructionEl) {
+                            this.instructionEl.style.opacity = '0';
+                            setTimeout(() => {
+                                if (this.instructionEl) this.instructionEl.style.display = 'none';
+                            }, 400);
+                        }
+                    }
+                    this.player.startCharging();
+                    window.soundEngine.startCharge();
+                }
+            } else if ((e.code === 'KeyR' || e.code === 'Enter') && !e.repeat) {
+                if (!this.gameOverModal.classList.contains('hidden')) {
+                    e.preventDefault();
+                    window.soundEngine.triggerHaptic('light');
+                    this.initGame();
+                }
+            }
+        });
+
+        window.addEventListener('keyup', (e) => {
+            if (e.code === 'Space') {
+                e.preventDefault();
+                if (this.player.state === 'CHARGING') {
+                    window.soundEngine.stopCharge();
+                    if (this.currentBlock && this.currentBlock.resetDip) {
+                        this.currentBlock.resetDip();
+                    }
+                    const jumpInfo = this.player.releaseJump(this.nextDir, this.currentBlock, this.nextBlock);
+                    if (jumpInfo) {
+                        window.soundEngine.playJump();
+                    }
+                }
+            }
+        });
 
         // Prevent iOS bounce & gesture defaults
         window.addEventListener('touchmove', (e) => e.preventDefault(), { passive: false });
@@ -418,4 +470,11 @@ class JumpGame {
 // Boot game when DOM is ready
 window.addEventListener('DOMContentLoaded', () => {
     window.gameInstance = new JumpGame();
+
+    // Register Service Worker for 100% offline PWA caching
+    if ('serviceWorker' in navigator && window.location.protocol.startsWith('http')) {
+        navigator.serviceWorker.register('./sw.js').catch((err) => {
+            console.log('ServiceWorker registration skipped:', err);
+        });
+    }
 });
