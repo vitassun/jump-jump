@@ -1,0 +1,21 @@
+{
+  "name": "jump-jump-ios",
+  "version": "1.0.0",
+  "description": "微信小程序经典「跳一跳」单机丝滑版，适配 iOS 原生 App 与 Web/PWA，包含完整 IPA 与源码",
+  "main": "app/index.html",
+  "scripts": {
+    "start": "python3 -m http.server 8080 --directory app",
+    "build:ipa": "bash scripts/build_ipa.sh"
+  },
+  "keywords": [
+    "jump-jump",
+    "wechat-jump",
+    "ios",
+    "ipa",
+    "threejs",
+    "webgl",
+    "game"
+  ],
+  "author": "vitassun",
+  "license": "MIT"
+}

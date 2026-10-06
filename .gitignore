@@ -1,0 +1,8 @@
+# Build artifacts
+ios/build/
+*.o
+*.dSYM/
+
+# OS files
+.DS_Store
+Thumbs.db

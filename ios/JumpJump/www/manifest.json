@@ -1,0 +1,22 @@
+{
+  "name": "跳一跳",
+  "short_name": "跳一跳",
+  "description": "微信小程序经典跳一跳，丝滑单机版",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#dce9f2",
+  "theme_color": "#dce9f2",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

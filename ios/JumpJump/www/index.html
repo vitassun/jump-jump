@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>跳一跳</title>
+    
+    <!-- iOS Web App & Standalone Configuration -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="跳一跳">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="icons/icon-192.png">
+    <link rel="manifest" href="manifest.json">
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- WebGL Three.js Container -->
+    <div id="canvas-container"></div>
+
+    <!-- UI Overlay -->
+    <div id="ui-overlay">
+        <!-- Top Score Section -->
+        <div class="score-board">
+            <div id="score-display">0</div>
+            <div id="high-score-display">历史最高: 0</div>
+            <div id="combo-display">连中 ×2 !</div>
+        </div>
+
+        <!-- Center Bottom Hint -->
+        <div id="instruction">长按蓄力，松开起跳</div>
+    </div>
+
+    <!-- Floating Score Popups Container -->
+    <div id="floating-scores"></div>
+
+    <!-- Game Over Modal -->
+    <div id="game-over-modal" class="hidden">
+        <div class="modal-card">
+            <div class="modal-label">本次得分</div>
+            <div id="final-score" class="modal-score">0</div>
+            <div id="final-best" class="modal-best">历史最高: 0</div>
+            <button id="restart-btn" class="modal-btn">再玩一局</button>
+        </div>
+    </div>
+
+    <!-- Game Scripts (100% Offline Bundled) -->
+    <script src="js/three.min.js"></script>
+    <script src="js/audio.js"></script>
+    <script src="js/blocks.js"></script>
+    <script src="js/player.js"></script>
+    <script src="js/game.js"></script>
+</body>
+</html>
